@@ -100,7 +100,7 @@ streamlit run web/app.py
 
 Then open <http://localhost:8501>.
 
-- **Sidebar**: line impedance, load as R + jX, frequency with unit, example loads, and advanced
+- **Sidebar**: line impedance, blank load inputs for R + jX, frequency with unit, and advanced
   options (velocity factor, stub type, sweep length, attenuation).
 - **Analysis tab**: VSWR, |Γ|, return loss, mismatch loss, a colour-coded verdict and the power split.
 - **Matching tab**: quarter-wave, L-network and single-stub designs as tables, each marked ✓ when
@@ -182,5 +182,4 @@ ruff check . && pytest
 - D. M. Pozar, *Microwave Engineering*, 4th ed., Wiley – chapters 2 and 5.
 
 ## License
-
 

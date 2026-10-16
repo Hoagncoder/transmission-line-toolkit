@@ -40,10 +40,9 @@ st.set_page_config(
 # Session state and callbacks
 # ---------------------------------------------------------------------------
 DEFAULTS = {
-    "preset": "Textbook: 100 + j50",
     "z0": 50.0,
-    "rl": 100.0,
-    "xl": 50.0,
+    "load_r": None,
+    "load_x": None,
     "fval": 1.0,
     "funit": "GHz",
 }
@@ -51,28 +50,11 @@ for key, value in DEFAULTS.items():
     st.session_state.setdefault(key, value)
 
 
-def apply_preset() -> None:
-    name = st.session_state["preset"]
-    if name in ui.PRESETS:
-        st.session_state["rl"], st.session_state["xl"] = ui.PRESETS[name]
-
-
-def mark_custom() -> None:
-    st.session_state["preset"] = ui.CUSTOM
-
-
 # ---------------------------------------------------------------------------
 # Sidebar: inputs
 # ---------------------------------------------------------------------------
 with st.sidebar:
     st.header("Parameters")
-    st.selectbox(
-        "Example loads",
-        [ui.CUSTOM, *ui.PRESETS],
-        key="preset",
-        on_change=apply_preset,
-        help="Pick a ready-made load, or choose Custom and type your own values.",
-    )
     z0 = st.number_input(
         "Line impedance Z0 (Ω)", min_value=1.0, max_value=1000.0, step=1.0, key="z0"
     )
@@ -82,8 +64,8 @@ with st.sidebar:
         min_value=0.0,
         max_value=1e6,
         step=1.0,
-        key="rl",
-        on_change=mark_custom,
+        value=None,
+        key="load_r",
         help="Resistive part of the load. Must be ≥ 0 (passive load).",
     )
     xl = col_x.number_input(
@@ -91,8 +73,8 @@ with st.sidebar:
         min_value=-1e6,
         max_value=1e6,
         step=1.0,
-        key="xl",
-        on_change=mark_custom,
+        value=None,
+        key="load_x",
         help="Reactive part: positive = inductive, negative = capacitive.",
     )
     col_f, col_u = st.columns([2, 1])
@@ -109,6 +91,10 @@ with st.sidebar:
         alpha = st.number_input(
             "Attenuation α (Np/m)", min_value=0.0, max_value=10.0, value=0.0, step=0.01
         )
+
+if rl is None or xl is None:
+    st.info("Enter both Load R and Load X to run the analysis.")
+    st.stop()
 
 # ---------------------------------------------------------------------------
 # Computation (all maths lives in tltoolkit)

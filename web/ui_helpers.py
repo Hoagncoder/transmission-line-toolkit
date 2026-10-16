@@ -13,20 +13,6 @@ import numpy as np
 from tltoolkit.analysis import Recommendation
 from tltoolkit.matching import LNetworkSolution, QuarterWaveResult, StubSolution
 
-CUSTOM = "Custom"
-
-#: name -> (R, X) in ohms
-PRESETS: Dict[str, Tuple[float, float]] = {
-    "Textbook: 100 + j50": (100.0, 50.0),
-    "Resistive 75": (75.0, 0.0),
-    "Resistive 25": (25.0, 0.0),
-    "Resistive 200": (200.0, 0.0),
-    "Capacitive 30 - j40": (30.0, -40.0),
-    "Already matched (50)": (50.0, 0.0),
-    "Short circuit": (0.0, 0.0),
-    "Purely reactive j50": (0.0, 50.0),
-}
-
 FREQ_UNITS: Dict[str, float] = {"Hz": 1.0, "kHz": 1e3, "MHz": 1e6, "GHz": 1e9}
 
 
