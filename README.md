@@ -49,48 +49,6 @@ tlmatch interactive             # prompts for each value
 - `--z0` defaults to 50 Ohm; `--vf` is the velocity factor in (0, 1].
 - `python -m tltoolkit ...` works too. Invalid input exits with code 2 and a clear message.
 
-### Example
-
-```text
-$ tlmatch match --zl 100+j50 --freq 1GHz
-
-Load analysis
-  Z0                 : 50.0000 Ohm
-  ZL                 : 100.0000 + j50.0000 Ohm
-  Gamma              : 0.40000 + j0.20000
-  |Gamma|            : 0.44721
-  angle(Gamma)       : 26.565 deg
-  VSWR               : 2.6180
-  Return loss        : 6.9897 dB
-  Mismatch loss      : 0.9691 dB
-  Reflected power    : 20.000 %
-  Delivered power    : 80.000 %
-
-Quarter-wave transformer
-  Complex load: place the transformer where the line impedance is purely real.
-  Solution 1:
-    Place at d = 0.03690 lambda (0.01106 m) from the load, where Zin = 130.9017 Ohm
-    Z1 = 80.9017 Ohm, length = 0.25 lambda
-    Check: Zin = 50.000000 + j0.000000 Ohm, error = 7.74e-15 Ohm -> OK
-  ...
-L-network (lumped elements)
-  Solution 1: shunt element across the load, series element towards the source
-    Series: X = +61.2372 Ohm -> inductor L = 9.7462 nH
-    Shunt : B = +0.013798 S -> capacitor C = 2.1960 pF
-    Check: Zin = 50.000000 + j0.000000 Ohm, error = 1.42e-14 Ohm -> OK
-  ...
-Single shunt stub (open-circuited)
-  Solution 1:
-    Stub position d = 0.19879 lambda (0.05960 m) from the load
-    Stub length   l = 0.37500 lambda (0.11242 m), open-circuited
-    Check: Y_total/Y0 = 1.000000 - j0.000000, error = 7.85e-16 -> OK
-  ...
-```
-
-`tlmatch sweep` produces a plot like this:
-
-![Sweep example](docs/sweep_example.png)
-
 ## Web app
 
 ```bash
@@ -176,10 +134,4 @@ examples/demo.py   runnable example
 pip install -e ".[dev]"
 ruff check . && pytest
 ```
-
-## References
-
-- D. M. Pozar, *Microwave Engineering*, 4th ed., Wiley – chapters 2 and 5.
-
-## License
 
