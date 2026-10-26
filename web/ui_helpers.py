@@ -8,8 +8,6 @@ from __future__ import annotations
 import math
 from typing import Dict, List, Tuple
 
-import numpy as np
-
 from tltoolkit.analysis import Recommendation
 from tltoolkit.matching import LNetworkSolution, QuarterWaveResult, StubSolution
 
@@ -36,13 +34,6 @@ def vswr_quality(vswr: float) -> Tuple[str, str]:
     if vswr <= 3.0:
         return "Fair match - matching network recommended", "warning"
     return "Poor match - matching network strongly recommended", "error"
-
-
-def clip_for_plot(values: np.ndarray, limit: float) -> np.ndarray:
-    """Replace huge values (near singularities) by NaN so plot lines break cleanly."""
-    out = np.array(values, dtype=float, copy=True)
-    out[~np.isfinite(out) | (np.abs(out) > limit)] = np.nan
-    return out
 
 
 def _mark(matched: bool) -> str:

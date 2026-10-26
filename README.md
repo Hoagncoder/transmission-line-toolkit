@@ -18,7 +18,7 @@ reflection coefficient, VSWR and losses, and designs matching networks that it t
   - L-network with lumped components (both topologies, values in nH / pF);
   - single shunt stub (open or short-circuited), closed-form solution.
 - **Sweeps** of `Zin`, VSWR and the voltage standing-wave pattern, exportable to CSV and plots.
-- **Web app** (Streamlit): live metrics, matching designs in tables, interactive plots, CSV download.
+- **Web app** (Streamlit): live metrics, matching method selection and design tables with diagrams.
 - **Command-line interface** (`tlmatch`) with an interactive mode, plus a clean Python API.
 - Tested with `pytest`; independent checks rebuild `Zin` from the component values.
 
@@ -28,7 +28,7 @@ reflection coefficient, VSWR and losses, and designs matching networks that it t
 git clone https://github.com/<Hoagncoder>/transmission-line-toolkit.git
 cd transmission-line-toolkit
 pip install -e ".[plot]"        # CLI + matplotlib plots
-pip install -e ".[web]"         # web app (Streamlit + Plotly)
+pip install -e ".[web]"         # web app (Streamlit)
 pip install -e ".[dev]"         # everything, plus pytest and ruff
 ```
 
@@ -58,16 +58,15 @@ streamlit run web/app.py
 
 Then open <http://localhost:8501>.
 
-- **Sidebar**: line impedance, blank load inputs for R + jX, frequency with unit, and advanced
-  options (velocity factor, sweep length, attenuation).
+- **Sidebar**: blank inputs for load R + jX, line impedance Z0, frequency (Hz), and relative
+  dielectric constant εr (used to calculate phase velocity for a non-magnetic line).
 - **Analysis tab**: VSWR, |Γ|, return loss, mismatch loss, a colour-coded verdict and the power split.
 - **Matching tab**: select among an L-network, shorted stub, open stub, and quarter-wave transformer.
-  The selected method's diagram and design table are shown together; solutions are marked ✓ when
+  The selected method's design table and diagram are shown together; solutions are marked ✓ when
   verified, with the residual error.
-- **Sweep tab**: interactive Plotly charts of `Zin` and the standing-wave pattern (hover, zoom, PNG via
-  the chart toolbar), dotted lines at the planes where `Zin` is real, and a CSV download.
 
-The app contains no formulas: it only calls `tltoolkit` and displays the results.
+The app delegates transmission-line and matching calculations to `tltoolkit`; it converts εr to
+phase velocity using the non-magnetic-line assumption.
 
 ### Deploying (free)
 
@@ -119,7 +118,7 @@ examples/demo.py   runnable example
 - `Zin(d) = Z0 (ZL + Z0 tanh(gamma d)) / (Z0 + ZL tanh(gamma d))`, `gamma = alpha + j beta`
 - Quarter-wave transformer: `Z1 = sqrt(Z0 * R)`
 - Time convention `exp(+j w t)`; distances are measured from the load towards the source.
-- Open circuit is `float("inf")`; the speed of light is `299 792 458 m/s` scaled by `--vf`.
+- Open circuit is `float("inf")`; the speed of light is `299 792 458 m/s` scaled by `--vf` in the CLI.
 
 ## Limitations
 

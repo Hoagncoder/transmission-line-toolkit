@@ -21,8 +21,8 @@ dependencies = ["numpy>=1.21"]
 
 [project.optional-dependencies]
 plot = ["matplotlib>=3.5"]
-web = ["streamlit>=1.35", "plotly>=5.18"]
-dev = ["pytest>=7", "ruff>=0.4", "matplotlib>=3.5", "streamlit>=1.35", "plotly>=5.18"]
+web = ["streamlit>=1.35"]
+dev = ["pytest>=7", "ruff>=0.4", "matplotlib>=3.5", "streamlit>=1.35"]
 
 [project.scripts]
 tlmatch = "tltoolkit.cli:main"
