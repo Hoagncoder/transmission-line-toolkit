@@ -59,9 +59,10 @@ streamlit run web/app.py
 Then open <http://localhost:8501>.
 
 - **Sidebar**: line impedance, blank load inputs for R + jX, frequency with unit, and advanced
-  options (velocity factor, stub type, sweep length, attenuation).
+  options (velocity factor, sweep length, attenuation).
 - **Analysis tab**: VSWR, |Γ|, return loss, mismatch loss, a colour-coded verdict and the power split.
-- **Matching tab**: quarter-wave, L-network and single-stub designs as tables, each marked ✓ when
+- **Matching tab**: select among an L-network, shorted stub, open stub, and quarter-wave transformer.
+  The selected method's diagram and design table are shown together; solutions are marked ✓ when
   verified, with the residual error.
 - **Sweep tab**: interactive Plotly charts of `Zin` and the standing-wave pattern (hover, zoom, PNG via
   the chart toolbar), dotted lines at the planes where `Zin` is real, and a CSV download.
@@ -135,3 +136,11 @@ pip install -e ".[dev]"
 ruff check . && pytest
 ```
 
+<<<<<<< HEAD
+=======
+## References
+
+- D. M. Pozar, *Microwave Engineering*, 4th ed., Wiley – chapters 2 and 5.
+
+## License
+>>>>>>> a796567 (Add matching method diagrams)

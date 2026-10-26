@@ -45,9 +45,35 @@ DEFAULTS = {
     "load_x": None,
     "fval": 1.0,
     "funit": "GHz",
+    "matching_method": "Lumped Element (L, C)",
 }
 for key, value in DEFAULTS.items():
     st.session_state.setdefault(key, value)
+
+MATCHING_METHODS = {
+    "Lumped Element (L, C)": ("L-network (lumped elements)", None),
+    "Shorted Stub": ("Single shunt stub (short-circuited)", "short"),
+    "Opened Stub": ("Single shunt stub (open-circuited)", "open"),
+    "Quarter-Wave Transformer": ("Quarter-wave transformer", None),
+}
+MATCHING_DIAGRAMS = {
+    "Lumped Element (L, C)": (
+        HERE / "assets" / "matching" / "lumped-element.png",
+        "Lumped-element matching using a capacitor or an inductor.",
+    ),
+    "Shorted Stub": (
+        HERE / "assets" / "matching" / "shorted-stub.png",
+        "Single shunt matching with a short-circuited stub.",
+    ),
+    "Opened Stub": (
+        HERE / "assets" / "matching" / "opened-stub.png",
+        "Single shunt matching with an open-circuited stub.",
+    ),
+    "Quarter-Wave Transformer": (
+        HERE / "assets" / "matching" / "quarter-wave-transformer.png",
+        "Quarter-wave transformer matching.",
+    ),
+}
 
 
 # ---------------------------------------------------------------------------
@@ -83,8 +109,6 @@ with st.sidebar:
 
     with st.expander("Advanced options"):
         vf = st.slider("Velocity factor", 0.3, 1.0, 1.0, 0.01)
-        include_stub = st.checkbox("Include single-stub designs", value=True)
-        stub_term = st.radio("Stub termination", ["open", "short"], horizontal=True)
         st.markdown("**Sweep**")
         max_lambda = st.slider("Length (wavelengths)", 0.25, 3.0, 1.0, 0.25)
         points = st.slider("Points", 101, 2001, 501, 100)
@@ -101,10 +125,17 @@ if rl is None or xl is None:
 # ---------------------------------------------------------------------------
 zl = complex(rl, xl)
 freq = fval * ui.FREQ_UNITS[funit]
+matching_method = st.session_state["matching_method"]
+recommendation_name, stub_termination = MATCHING_METHODS[matching_method]
 try:
     vp = phase_velocity(vf)
     report = recommend_matching(
-        z0, zl, freq, vp=vp, include_stub=include_stub, stub_termination=stub_term
+        z0,
+        zl,
+        freq,
+        vp=vp,
+        include_stub=stub_termination is not None,
+        stub_termination=stub_termination or "open",
     )
     sweep = sweep_impedance(
         z0, zl, freq, max_length_lambda=max_lambda, points=points, vp=vp, alpha=alpha
@@ -162,20 +193,39 @@ with tab_analysis:
 # Tab 2: matching
 # ---------------------------------------------------------------------------
 with tab_matching:
-    for note in report.notes:
-        st.info(note)
-    if not report.recommendations and not report.notes:
-        st.info("No matching design is available for these parameters.")
-    for rec in report.recommendations:
+    st.radio(
+        "Select Matching Method",
+        list(MATCHING_METHODS),
+        horizontal=True,
+        key="matching_method",
+    )
+    image_path, image_caption = MATCHING_DIAGRAMS[matching_method]
+    st.image(str(image_path), caption=image_caption, width=700)
+    selected_recommendation = next(
+        (rec for rec in report.recommendations if rec.method == recommendation_name), None
+    )
+    if selected_recommendation is not None:
+        rec = selected_recommendation
         with st.container(border=True):
             st.subheader(rec.method)
             st.caption(rec.reason)
             st.dataframe(ui.recommendation_rows(rec), hide_index=True)
-    if report.recommendations:
         st.caption(
             "Every solution is verified by recomputing the impedance (or admittance) after "
             "matching; the residual error should be close to zero."
         )
+    else:
+        if not report.recommendations:
+            notes = report.notes
+        elif matching_method == "Lumped Element (L, C)":
+            notes = [note for note in report.notes if note.startswith("L-network")]
+        else:
+            notes = [note for note in report.notes if note.startswith("No single-stub")]
+        if notes:
+            for note in notes:
+                st.info(note)
+        else:
+            st.info("No matching design is available for this method and these parameters.")
 
 # ---------------------------------------------------------------------------
 # Tab 3: sweep
