@@ -135,11 +135,3 @@ pip install -e ".[dev]"
 ruff check . && pytest
 ```
 
-<<<<<<< HEAD
-=======
-## References
-
-- D. M. Pozar, *Microwave Engineering*, 4th ed., Wiley – chapters 2 and 5.
-
-## License
->>>>>>> a796567 (Add matching method diagrams)
